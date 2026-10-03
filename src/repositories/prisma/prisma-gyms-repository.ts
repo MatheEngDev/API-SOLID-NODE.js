@@ -19,7 +19,7 @@ export class PrismaGymsRepository implements GymsRepository {
       { current_schema: string }[]
     >`SELECT current_schema()`;
 
-    console.log("SCHEMA ATUAL DO POSTGRES:", currentSchema);
+    
 
 
     const gyms = await prisma.$queryRaw<Gym[]>`

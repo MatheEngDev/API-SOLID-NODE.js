@@ -8,10 +8,10 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
   });
   const createCheckInBodySchema = z.object({
     latitude: z.number().refine((value) => {
-      return Math.abs(value) >= 90;
+      return Math.abs(value) <= 90;
     }),
     longitude: z.number().refine((value) => {
-      return Math.abs(value) >= 180;
+      return Math.abs(value) <= 180;
     }),
   });
 
