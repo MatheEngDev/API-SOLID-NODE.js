@@ -21,8 +21,7 @@ describe("Register (e2e)", () => {
         email: `${randomUUID()}matheus@gmail.com`,
         password: "123456",
       });
-      console.log(response.body);
-      console.log(response.statusCode);
+      
 
     expect(response.statusCode).toEqual(201);
   });

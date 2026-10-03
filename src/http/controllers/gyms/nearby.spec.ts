@@ -3,7 +3,7 @@ import { app } from "../../../app";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createAndAuthenticateUser } from "@/use-cases/create-and-authenticate-user";
 
-describe("search Gyms (e2e)", () => {
+describe("Nearby Gyms (e2e)", () => {
   beforeAll(async () => {
     await app.ready();
   });
@@ -12,10 +12,11 @@ describe("search Gyms (e2e)", () => {
     await app.close();
   });
 
-  it("should be able search gyms by title ", async () => {
-    
-
+  it("should be able to list nearby gyms", async () => {
     const { token } = await createAndAuthenticateUser(app);
+
+
+
     await request(app.server)
       .post("/gyms")
       .set("Authorization", `Bearer ${token}`)
@@ -34,22 +35,17 @@ describe("search Gyms (e2e)", () => {
         title: "typeScript Gym",
         description: "Some description",
         phone: "11999999999",
-        latitude: -23.6447814,
-        longitude: -46.6424028,
+        latitude: -22.4202326,
+        longitude: -47.6821663,
       });
 
-    
-
     const response = await request(app.server)
-      .get("/gyms/search")
+      .get("/gyms/nearby")
       .query({
-        q: "Javascript",
+        latitude: -23.6447814,
+        longitude: -46.6424028,
       })
       .set("Authorization", `Bearer ${token}`);
-
-    
-
-   
 
     expect(response.statusCode).toEqual(200);
     expect(response.body.gyms).toHaveLength(1);
