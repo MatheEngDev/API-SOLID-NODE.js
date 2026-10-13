@@ -15,7 +15,7 @@ describe("search Gyms (e2e)", () => {
   it("should be able search gyms by title ", async () => {
     
 
-    const { token } = await createAndAuthenticateUser(app);
+    const { token } = await createAndAuthenticateUser(app, true);
     await request(app.server)
       .post("/gyms")
       .set("Authorization", `Bearer ${token}`)
@@ -36,6 +36,8 @@ describe("search Gyms (e2e)", () => {
         phone: "11999999999",
         latitude: -23.6447814,
         longitude: -46.6424028,
+
+        
       });
 
     
