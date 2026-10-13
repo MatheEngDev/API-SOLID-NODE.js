@@ -1,35 +1,29 @@
 import { prisma } from "@/lib/prisma";
 import { hash } from "bcryptjs";
-import type { FastifyInstance } from "fastify";
-import request from "supertest";
-import { randomUUID } from "node:crypto";
+import { FastifyInstance } from "fastify";
+import Request from "supertest";
+
 export async function createAndAuthenticateUser(
   app: FastifyInstance,
   isAdmin = false,
 ) {
-  const email = `matheus-${randomUUID()}@gmail.com`;
   await prisma.user.create({
     data: {
       name: "Matheus juan",
-      email,
+      email: "matheus@gmail.com",
       passwordHash: await hash("123456", 6),
       role: isAdmin ? "ADMIN" : "MEMBER",
-
     },
-
-    
-    
   });
 
+  const authResponse = await Request(app.server).post("/sessions").send({
+    email: "matheus@gmail.com",
+    password: "123456",
+  });
 
-
-  
-  const authResponse = await request(app.server)
-    .post("/sessions")
-    .send({ email, password: "123456" });
-
-
-    
   const { token } = authResponse.body;
-  return { token };
+
+  return {
+    token,
+  };
 }
