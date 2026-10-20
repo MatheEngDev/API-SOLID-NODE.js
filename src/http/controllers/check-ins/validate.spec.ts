@@ -1,9 +1,7 @@
 import request from "supertest";
 import { app } from "../../../app";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { randomUUID } from "node:crypto";
 import { createAndAuthenticateUser } from "@/use-cases/create-and-authenticate-user";
-import { title } from "node:process";
 import { prisma } from "@/lib/prisma";
 
 describe("validate check-in (e2e)", () => {
@@ -16,8 +14,9 @@ describe("validate check-in (e2e)", () => {
   });
 
   it("should be able to validate a check-in", async () => {
-    const { token } = await createAndAuthenticateUser(app, true);
-
+const { token } = await createAndAuthenticateUser(app, {
+  role: "ADMIN",
+});
     const user = await prisma.user.findFirstOrThrow();
 
     const gym = await prisma.gym.create({
