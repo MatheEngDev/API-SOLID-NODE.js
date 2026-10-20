@@ -2,6 +2,8 @@ import request from "supertest";
 import { app } from "../../../app";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createAndAuthenticateUser } from "@/use-cases/create-and-authenticate-user";
+import { prisma } from "@/lib/prisma";
+import bcrypt from "bcryptjs";
 
 describe("create Gym (e2e)", () => {
   beforeAll(async () => {
@@ -13,7 +15,25 @@ describe("create Gym (e2e)", () => {
   });
 
   it("should be able to create a gym", async () => {
-    const { token } = await createAndAuthenticateUser(app, true);
+    const passwordHash = await bcrypt.hash("123456", 6);
+
+    await prisma.user.create({
+      data: {
+        name: "Admin",
+        email: "admin@gmail.com",
+        passwordHash,
+        role: "ADMIN",
+      },
+    });
+
+    const authResponse = await request(app.server).post("/sessions").send({
+      email: "admin@gmail.com",
+      password: "123456",
+    });
+
+    expect(authResponse.statusCode).toEqual(200);
+
+    const { token } = authResponse.body;
 
     const response = await request(app.server)
       .post("/gyms")
@@ -27,6 +47,5 @@ describe("create Gym (e2e)", () => {
       });
 
     expect(response.statusCode).toEqual(201);
-    
   });
 });
