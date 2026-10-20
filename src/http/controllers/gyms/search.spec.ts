@@ -12,11 +12,12 @@ describe("search Gyms (e2e)", () => {
     await app.close();
   });
 
-  it("should be able search gyms by title ", async () => {
-    
+  it("should be able search gyms by title", async () => {
+    const { token } = await createAndAuthenticateUser(app, {
+      role: "ADMIN",
+    });
 
-    const { token } = await createAndAuthenticateUser(app, true);
-    await request(app.server)
+    const gymResponse = await request(app.server)
       .post("/gyms")
       .set("Authorization", `Bearer ${token}`)
       .send({
@@ -27,20 +28,18 @@ describe("search Gyms (e2e)", () => {
         longitude: -46.6424028,
       });
 
+    expect(gymResponse.statusCode).toEqual(201);
+
     await request(app.server)
       .post("/gyms")
       .set("Authorization", `Bearer ${token}`)
       .send({
-        title: "typeScript Gym",
+        title: "TypeScript Gym",
         description: "Some description",
         phone: "11999999999",
         latitude: -23.6447814,
         longitude: -46.6424028,
-
-        
       });
-
-    
 
     const response = await request(app.server)
       .get("/gyms/search")
@@ -48,10 +47,6 @@ describe("search Gyms (e2e)", () => {
         q: "Javascript",
       })
       .set("Authorization", `Bearer ${token}`);
-
-    
-
-   
 
     expect(response.statusCode).toEqual(200);
     expect(response.body.gyms).toHaveLength(1);
