@@ -1,6 +1,8 @@
 name: Run Unit Tests
 
-on: [push]
+on:
+  push:
+  pull_request:
 
 jobs:
   run-unit-tests:
@@ -10,11 +12,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 6.32.9
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -28,5 +25,11 @@ jobs:
       - name: Generate Prisma Client
         run: npx prisma generate --schema=prisma/schema.prisma
 
+      - name: Verify Prisma Client
+        run: |
+          echo "Verificando arquivos gerados pelo Prisma..."
+          ls -la src/generated/prisma
+
       - name: Run Unit Tests
         run: npm run test
+
