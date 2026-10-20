@@ -41,7 +41,7 @@ WHERE ( 6371 * acos( cos( radians(${latitude}) ) * cos( radians( latitude ) ) * 
           contains: query,
         },
       },
-      take: 1,
+      take: 20,
       skip: (page - 1) * 20,
     });
 
